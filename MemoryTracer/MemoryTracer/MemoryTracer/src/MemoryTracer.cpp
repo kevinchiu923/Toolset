@@ -187,20 +187,6 @@ bool MemoryTracer::_fetchProcessDetail(MemoryTracerDetail& mtd)
                 ret &= (GetProcessMemoryInfo(processHandle, (PPROCESS_MEMORY_COUNTERS)&processMemCounter, sizeof(processMemCounter)));
                 mtd.MemoryUsage = (processMemCounter.PrivateUsage) / 1024; // PrivateUsage has the most similar estimate result with process hacker
 
-                //--- Memory usage result test
-                //mtc.MemoryUsageA = (processMemCounter.cb) / 1024;
-                //mtc.MemoryUsageB = (processMemCounter.PageFaultCount) / 1024;
-                //mtc.MemoryUsageC = (processMemCounter.PagefileUsage) / 1024;
-                //mtc.MemoryUsageD = (processMemCounter.PeakPagefileUsage) / 1024;
-                //mtc.MemoryUsageE = (processMemCounter.PeakWorkingSetSize) / 1024;
-                //mtc.MemoryUsageF = (processMemCounter.QuotaNonPagedPoolUsage) / 1024;
-                //mtc.MemoryUsageG = (processMemCounter.QuotaPagedPoolUsage) / 1024;
-                //mtc.MemoryUsageH = (processMemCounter.QuotaPeakNonPagedPoolUsage) / 1024;
-                //mtc.MemoryUsageI = (processMemCounter.QuotaPeakPagedPoolUsage) / 1024;
-                //mtc.MemoryUsageJ = (processMemCounter.WorkingSetSize) / 1024;
-                //mtc.MemoryUsageK = (processMemCounter.PrivateUsage) / 1024;
-                //----------------------------------------------------------------------------------
-
                 // Get current time
                 string currentTimetagStr = Util::currentTimetag();
                 if (!currentTimetagStr.empty()) {
