@@ -18,10 +18,36 @@ int main(int argc, char* argv[])
     if (mMemoryTracer.getAllProcessInfo()) {
         string outFilePath = "MemoryTracer_result.json";
         ofstream writeInFile(outFilePath);
-        writeInFile << mMemoryTracer.GetOutJsonArray() << endl;
+        writeInFile << mMemoryTracer.GetOutJson() << endl;
         cout << "Memory tracer finished!\n";
     }
     // else, print exception
 
     return 0;
 }
+
+/*
+{
+    "MemoryTracer": [
+        {
+            "MemoryUsage": 0,
+            "ParentPid": 0,
+            "Pid": 4,
+            "ProcessExecutePath": "<Unknown>",
+            "ProcessName": "<Unknown>",
+            "Timetag": "<Unknown>"
+        },
+        {
+            "ErrorCode": 1,
+            "MemoryUsage": 19780,
+            "ParentPid": 23712,
+            "Pid": 19164,
+            "ProcessExecutePath": "C:\\Spotify\\Spotify.exe",
+            "ProcessName": "Spotify.exe",
+            "Timetag": "Wed Mar  4 00:31:50 2020\n"
+        }
+    ],
+    "SystemKernalCount": 11,
+    "TotalCount": 264
+}
+*/

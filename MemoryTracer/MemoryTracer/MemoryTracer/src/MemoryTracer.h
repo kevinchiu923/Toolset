@@ -17,7 +17,7 @@
 
 /// MemoryTracerBase
 #define INFO_MEM_TRACER_BASE "MemoryTracer"
-#define INFO_MEM_TRACER_DETAIL "Detail"
+//#define INFO_MEM_TRACER_DETAIL "Detail"
 #define INFO_MEM_TRACER_TOTAL_COUNT "TotalCount"
 #define INFO_MEM_TRACER_SYS_KERNAL_COUNT "SystemKernalCount"
 
@@ -37,14 +37,7 @@ namespace Toolset
         unsigned long ErrorCode = 0;
     };
 
-    struct MemoryTracerBase
-    {
-        int SystemKernalCount = 0;
-        int TotalRecordCount = 0;
-        MemoryTracerDetail memoryTracerDetail;
-    };
-
-    typedef std::vector<MemoryTracerBase> MemoryTracerBaseVec;
+    typedef std::unordered_map<std::string, MemoryTracerDetail> MemoryTracerDetailMap; // <Pid, MemoryTracerDetail>
 
     class MemoryTracer
     {
@@ -56,7 +49,7 @@ namespace Toolset
         bool getAllProcessInfo();
 
         // Get result json
-        static json GetOutJsonArray() noexcept { return mOutJsonArray; };
+        static json GetOutJson() noexcept { return mResultJson; };
 
     protected:
 
@@ -64,17 +57,19 @@ namespace Toolset
         // Enable debug privilege
         bool _enableTokenDebugPrivilege();
 
-        static json mOutJsonArray;
-        static json mOutJson;
+        // Counter
+        int mSystemKernalCount = 0;
+        int mTotalRecordCount = 0;
 
-        MemoryTracerBaseVec mOutCache;
-        MemoryTracerBase mMemoryTracerBase;
+        // Return cache
+        MemoryTracerDetailMap mOutCache;
 
         // Error code
         unsigned long mErrorCode = 0;
 
         // Combine json result
-        bool _toJson(MemoryTracerBaseVec& mOutCache);
+        static json mResultJson;
+        bool _toJson(json& mResultJson, const MemoryTracerDetailMap& mOutCache);
 
         // Fetch process name, execute path, memory usage, current timetag
         bool _fetchProcessDetail(MemoryTracerDetail& mtd);
@@ -84,22 +79,3 @@ namespace Toolset
     };
 }
 #endif // _MEMORY_TRACER_
-
-/*
-[
-    {
-        "MemoryTracer": {
-            "Detail": {
-                "MemoryUsage": 11208,
-                "ParentPid": 940,
-                "Pid": 3604,
-                "ProcessExecutePath": "C:\\WINDOWS\\system32\\svchost.exe",
-                "ProcessName": "svchost.exe",
-                "Timetag": "Sun Mar  1 20:21:48 2020\n"
-            },
-            "SystemKernalCount": 7,
-            "TotalCount": 46
-        }
-    }
-]
-*/

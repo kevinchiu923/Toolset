@@ -15,8 +15,7 @@
 using namespace std;
 using namespace Toolset;
 
-json MemoryTracer::mOutJson = json::object();
-json MemoryTracer::mOutJsonArray = json::array();
+json MemoryTracer::mResultJson = json::object();
 
 class HandleGuard
 {
@@ -46,7 +45,7 @@ bool MemoryTracer::getAllProcessInfo()
 
     // Enable debug privilege
     if (!_enableTokenDebugPrivilege()) {
-        cout << "Cannot enable debug privikege" << endl;
+        cout << "Cannot enable debug privilege" << endl;
         return ret;
     }
 
@@ -74,14 +73,13 @@ bool MemoryTracer::getAllProcessInfo()
 
         mtd.ParentPid = pe32.th32ParentProcessID;
         _fetchProcessDetail(mtd);
-        mMemoryTracerBase.TotalRecordCount += 1;
+        mTotalRecordCount += 1;
 
         // Push into output cache
-        mMemoryTracerBase.memoryTracerDetail = mtd;
-        mOutCache.push_back(mMemoryTracerBase);
+        mOutCache[to_string(mtd.Pid)] = mtd;
     } while (Process32Next(processSnapHandle, &pe32));
 
-    if (_toJson(mOutCache)) {
+    if (_toJson(mResultJson, mOutCache)) {
         ret = true;
     }
 
@@ -90,28 +88,28 @@ bool MemoryTracer::getAllProcessInfo()
 
 
 // PRIVATE
-bool MemoryTracer::_toJson(MemoryTracerBaseVec& mOutCache)
+bool MemoryTracer::_toJson(json& mResultJson, const MemoryTracerDetailMap& mOutCache)
 {
     bool ret = false;
     try {
+        // Push two counters into json
+        mResultJson[INFO_MEM_TRACER_TOTAL_COUNT] = mTotalRecordCount;
+        mResultJson[INFO_MEM_TRACER_SYS_KERNAL_COUNT] = mSystemKernalCount;
+        mResultJson[INFO_MEM_TRACER_BASE] = json::array();
+
+        // Push data of each process into json
         for (auto& iter : mOutCache) {
-            json tmpJson = json::object();
-            /// Base
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_TOTAL_COUNT] = iter.TotalRecordCount;
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_SYS_KERNAL_COUNT] = iter.SystemKernalCount;
-
-            /// MemoryTracerDetail
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_DETAIL][INFO_MEM_TRACER_PID] = iter.memoryTracerDetail.Pid;
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_DETAIL][INFO_MEM_TRACER_PPID] = iter.memoryTracerDetail.ParentPid;
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_DETAIL][INFO_MEM_TRACER_PROCESS_NAME] = iter.memoryTracerDetail.ProcessName;
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_DETAIL][INFO_MEM_TRACER_PROCESS_EXE_PATH] = iter.memoryTracerDetail.ProcessExecutePath;
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_DETAIL][INFO_MEM_TRACER_MEMORY_USAGE] = iter.memoryTracerDetail.MemoryUsage;
-            tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_DETAIL][INFO_MEM_TRACER_TIMETAG] = iter.memoryTracerDetail.Timetag;
-            if (iter.memoryTracerDetail.ErrorCode != 0) {
-                tmpJson[INFO_MEM_TRACER_BASE][INFO_MEM_TRACER_DETAIL][INFO_MEM_TRACER_ERROR_CODE] = iter.memoryTracerDetail.ErrorCode;
+            json tmp = json::object();
+            tmp[INFO_MEM_TRACER_PID] = iter.second.Pid;
+            tmp[INFO_MEM_TRACER_PPID] = iter.second.ParentPid;
+            tmp[INFO_MEM_TRACER_PROCESS_NAME] = iter.second.ProcessName;
+            tmp[INFO_MEM_TRACER_PROCESS_EXE_PATH] = iter.second.ProcessExecutePath;
+            tmp[INFO_MEM_TRACER_MEMORY_USAGE] = iter.second.MemoryUsage;
+            tmp[INFO_MEM_TRACER_TIMETAG] = iter.second.Timetag;
+            if (iter.second.ErrorCode != 0) {
+                tmp[INFO_MEM_TRACER_ERROR_CODE] = iter.second.ErrorCode;
             }
-
-            mOutJsonArray.push_back(tmpJson);
+            mResultJson[INFO_MEM_TRACER_BASE].push_back(tmp);
         }
         ret = true;
     }
@@ -199,13 +197,13 @@ bool MemoryTracer::_fetchProcessDetail(MemoryTracerDetail& mtd)
                 }
             }
             else {
-                mErrorCode = GetLastError();
+                mtd.ErrorCode = GetLastError();
                 ret = false;
                 return ret;
             }
         }
         else {
-            mErrorCode = GetLastError();
+            mtd.ErrorCode = GetLastError();
             ret = false;
             return ret;
         }
@@ -214,7 +212,7 @@ bool MemoryTracer::_fetchProcessDetail(MemoryTracerDetail& mtd)
     }
     else {
         // system kernal process cannot be parsed
-        mMemoryTracerBase.SystemKernalCount += 1;
+        mSystemKernalCount += 1;
     }
 }
 
