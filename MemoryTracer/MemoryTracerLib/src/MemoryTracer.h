@@ -21,9 +21,6 @@
 #define INFO_MEM_TRACER_TOTAL_COUNT "TotalCount"
 #define INFO_MEM_TRACER_SYS_KERNAL_COUNT "SystemKernalCount"
 
-
-using namespace nlohmann;
-
 namespace Toolset
 {
     struct MemoryTracerDetail
@@ -49,7 +46,7 @@ namespace Toolset
         bool getAllProcessInfo();
 
         // Get result json
-        static json GetOutJson() noexcept { return mResultJson; };
+        nlohmann::json GetOutJson() noexcept { return mResultJson; };
 
     protected:
 
@@ -68,8 +65,8 @@ namespace Toolset
         unsigned long mErrorCode = 0;
 
         // Combine json result
-        static json mResultJson;
-        bool _toJson(json& mResultJson, const MemoryTracerDetailMap& mOutCache);
+        nlohmann::json mResultJson = nlohmann::json::object();
+        bool _toJson(nlohmann::json& mResultJson, const MemoryTracerDetailMap& mOutCache);
 
         // Fetch process name, execute path, memory usage, current timetag
         bool _fetchProcessDetail(MemoryTracerDetail& mtd);

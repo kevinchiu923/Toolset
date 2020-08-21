@@ -14,8 +14,7 @@
 
 using namespace std;
 using namespace Toolset;
-
-json MemoryTracer::mResultJson = json::object();
+using namespace nlohmann;
 
 class HandleGuard
 {
@@ -36,8 +35,12 @@ private:
     HANDLE *mHandle;
 };
 // PUBLIC
-MemoryTracer::MemoryTracer() {}
-MemoryTracer::~MemoryTracer() {}
+MemoryTracer::MemoryTracer()
+{
+}
+MemoryTracer::~MemoryTracer()
+{
+}
 
 bool MemoryTracer::getAllProcessInfo()
 {
