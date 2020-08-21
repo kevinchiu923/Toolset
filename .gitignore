@@ -41,3 +41,8 @@
 *.Build.CppClean.log
 *.ipch
 *.user
+*.tlog
+*.lastbuildstate
+*.iobj
+*.ipdb
+*.pdb
