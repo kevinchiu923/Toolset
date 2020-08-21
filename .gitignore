@@ -35,3 +35,9 @@
 *.VC.db
 *.suo
 *.opendb
+*.vcxproj.user
+*.log
+*.vcxproj.FileListAbsolute.txt
+*.Build.CppClean.log
+*.ipch
+*.user
