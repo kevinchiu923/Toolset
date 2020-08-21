@@ -34,3 +34,4 @@
 # Visual Studio
 *.VC.db
 *.suo
+*.opendb
