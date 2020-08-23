@@ -10,5 +10,6 @@ namespace Toolset
     {
     public:
         static std::string currentTimetag();
+        static std::string trimEndingChar(const std::string& inputStr, const char& target);
     };
 }

@@ -199,7 +199,7 @@ bool MemoryTracer::_fetchProcessDetail(MemoryTracerDetail& mtd)
                 mtd.MemoryUsage = (processMemCounter.PrivateUsage) / 1024; // PrivateUsage has the most similar estimate result with process hacker
 
                 // Get current time
-                string currentTimetagStr = Util::currentTimetag();
+                string currentTimetagStr = Util::trimEndingChar(Util::currentTimetag(), '\n');
                 if (!currentTimetagStr.empty()) {
                     ret &= true;
                     mtd.Timetag = currentTimetagStr;
