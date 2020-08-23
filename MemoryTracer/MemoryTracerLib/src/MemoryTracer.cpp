@@ -177,13 +177,15 @@ bool MemoryTracer::_fetchProcessDetail(MemoryTracerDetail& mtd)
 
             // Get process name
             ret &= (GetModuleBaseName(processHandle, moduleHandle, buffer, sizeof(buffer) / sizeof(TCHAR)) != 0);
-            if (!msConverter.to_bytes(buffer).empty()) {
-                mtd.ProcessName = msConverter.to_bytes(buffer);
+            string convertProcessName = msConverter.to_bytes(buffer);
+            if (!convertProcessName.empty()) {
+                mtd.ProcessName = convertProcessName;
 
                 // Get execute path
                 ret &= (GetModuleFileNameEx(processHandle, moduleHandle, buffer, sizeof(buffer) / sizeof(TCHAR)) != 0);
-                if (!msConverter.to_bytes(buffer).empty()) {
-                    mtd.ProcessExecutePath = msConverter.to_bytes(buffer);
+                string convertProcessExecutePath = msConverter.to_bytes(buffer);
+                if (!convertProcessExecutePath.empty()) {
+                    mtd.ProcessExecutePath = convertProcessExecutePath;
                 }
 
                 //----------------------------------------------------------------------------------
