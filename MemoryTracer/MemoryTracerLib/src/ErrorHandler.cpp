@@ -72,5 +72,5 @@ void ErrorHandler::log(LogLevel level, std::string message)
         break;
     }
 
-    spdlog::get("FileLog")->flush(); //§ï¦¨flush()
+    spdlog::get("FileLog")->flush();
 }

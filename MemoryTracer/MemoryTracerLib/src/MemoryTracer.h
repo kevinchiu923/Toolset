@@ -1,3 +1,11 @@
+/*****************************************************************************\
+*                                                                             *
+* MemoryTracer.cpp - Fetch all process and fetch memory usage for each.       *
+*                                                                             *
+* Copyright (c) 2020 Kevin Chiu.  All rights reserved.                        *
+*                                                                             *
+\*****************************************************************************/
+
 #ifndef _MEMORY_TRACER_
 #define _MEMORY_TRACER_
 
@@ -46,7 +54,7 @@ namespace Toolset
         bool getAllProcessInfo();
 
         // Get result json
-        nlohmann::json GetOutJson() noexcept { return mResultJson; };
+        nlohmann::json GetResultJson() noexcept { return mResultJson; };
 
     protected:
 

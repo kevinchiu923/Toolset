@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     if (mMemoryTracer.getAllProcessInfo()) {
         string outFilePath = fs::current_path().string() + "/MemoryTracer_result.json";
         ofstream writeInFile(outFilePath);
-        writeInFile << mMemoryTracer.GetOutJson() << endl;
+        writeInFile << mMemoryTracer.GetResultJson() << endl;
         cout << "Memory tracer finished!\n";
     }
     // else, print exception

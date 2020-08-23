@@ -1,3 +1,11 @@
+/*****************************************************************************\
+*                                                                             *
+* MemoryTracer.cpp - Fetch all process and fetch memory usage for each.       *
+*                                                                             *
+* Copyright (c) 2020 Kevin Chiu.  All rights reserved.                        *
+*                                                                             *
+\*****************************************************************************/
+
 #pragma once
 
 #include "MemoryTracer.h"
