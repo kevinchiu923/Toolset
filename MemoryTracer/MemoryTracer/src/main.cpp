@@ -9,6 +9,8 @@
 #include <psapi.h>
 #include <stdio.h>
 
+#include "ErrorHandler.h"
+
 using namespace nlohmann;
 using namespace std;
 using namespace Toolset;
@@ -16,12 +18,14 @@ namespace fs = std::experimental::filesystem;
 
 int main(int argc, char* argv[])
 {
+    ErrorHandler::getInstance()->log(Info, LOG_HEADER + "[Main] MemoryTracer started.");
+
     MemoryTracer mMemoryTracer;
     if (mMemoryTracer.getAllProcessInfo()) {
         string outFilePath = fs::current_path().string() + "/MemoryTracer_result.json";
         ofstream writeInFile(outFilePath);
         writeInFile << mMemoryTracer.GetResultJson() << endl;
-        cout << "Memory tracer finished!\n";
+        ErrorHandler::getInstance()->log(Info, LOG_HEADER + "[Main] MemoryTracer finished.");
     }
     // else, print exception
 
@@ -46,7 +50,7 @@ int main(int argc, char* argv[])
             "Pid": 19164,
             "ProcessExecutePath": "C:\\Spotify\\Spotify.exe",
             "ProcessName": "Spotify.exe",
-            "Timetag": "Wed Mar  4 00:31:50 2020\n"
+            "Timetag": "Wed Mar  4 00:31:50 2020"
         }
     ],
     "SystemKernalCount": 11,
